@@ -140,7 +140,8 @@ const Transactions = () => {
                   <td>{new Date(txn.date).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
-                    day: 'numeric'
+                    day: 'numeric',
+                    timeZone: 'UTC'
                   })}</td>
                   <td>{txn.store}</td>
                   <td>{txn.category}</td>
