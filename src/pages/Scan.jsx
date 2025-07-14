@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react';
-// import { OpenAI } from 'openai'; // Commented out
 import { S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
@@ -16,10 +15,18 @@ const Scan = ({ onResult }) => {
   }, []);
 
   const startCamera = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-    if (videoRef.current) {
-      videoRef.current.srcObject = stream;
-      videoRef.current.play();
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' } }
+      });
+
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+        videoRef.current.play();
+      }
+    } catch (err) {
+      console.error('Camera access error:', err);
+      alert('Unable to access the camera. Please ensure permission is granted.');
     }
   };
 
@@ -33,10 +40,12 @@ const Scan = ({ onResult }) => {
     const canvas = canvasRef.current;
     const context = canvas.getContext('2d');
     const video = videoRef.current;
+
     canvas.width = video.videoWidth;
     canvas.height = video.videoHeight;
     context.drawImage(video, 0, 0);
     canvas.toBlob(uploadToS3, 'image/jpeg');
+
     const dataUrl = canvas.toDataURL('image/jpeg');
     setImageDataUrl(dataUrl);
     stopCamera();
@@ -44,6 +53,7 @@ const Scan = ({ onResult }) => {
 
   const uploadToS3 = async (blob) => {
     setLoading(true);
+
     const region = import.meta.env.VITE_S3_REGION;
     const bucket = import.meta.env.VITE_S3_BUCKET;
 
@@ -72,16 +82,11 @@ const Scan = ({ onResult }) => {
       const url = `https://${bucket}.s3.${region}.amazonaws.com/${fileName}`;
       setReceiptUrl(url);
 
-      // Notify the parent component
-        if (onResult) {
-        onResult({ receiptUrl: url }); // Send as an object with `receiptUrl` key
-        }
+      if (onResult) {
+        onResult({ receiptUrl: url });
+      }
 
-      // Optional: log the URL for testing
       console.log('✅ Receipt uploaded to S3:', url);
-
-      // Commented out OpenAI logic
-      // await sendToOpenAI(url);
     } catch (err) {
       console.error('S3 Upload error:', err);
     } finally {
@@ -89,40 +94,9 @@ const Scan = ({ onResult }) => {
     }
   };
 
-  // const sendToOpenAI = async (s3Url) => {
-  //   const openAIRequest = {
-  //     model: "gpt-4o-mini",
-  //     messages: [
-  //       {
-  //         role: "user",
-  //         content: [
-  //           {
-  //             type: "text",
-  //             text: `Analyze the image of this receipt and extract the following details: ...`
-  //           },
-  //           {
-  //             type: "image_url",
-  //             image_url: { url: s3Url },
-  //           },
-  //         ],
-  //       },
-  //     ],
-  //   };
-
-  //   try {
-  //     const res = await openai.chat.completions.create(openAIRequest);
-  //     const content = res.choices[0].message.content;
-  //     const parsed = JSON.parse(content);
-  //     setParsedData(parsed);
-  //   } catch (err) {
-  //     console.error("OpenAI error:", err);
-  //   }
-  // };
-
   const resetScan = () => {
     setImageDataUrl(null);
     setReceiptUrl(null);
-    // setParsedData(null);
     startCamera();
   };
 
@@ -133,7 +107,9 @@ const Scan = ({ onResult }) => {
       {!imageDataUrl && (
         <>
           <video ref={videoRef} className="w-100" style={{ maxWidth: '500px' }} />
-          <button className="btn btn-primary mt-3" onClick={takePhoto}>Capture Receipt</button>
+          <button className="btn btn-primary mt-3" onClick={takePhoto}>
+            Capture Receipt
+          </button>
         </>
       )}
 
@@ -143,7 +119,9 @@ const Scan = ({ onResult }) => {
         <div>
           <img src={imageDataUrl} alt="Receipt" className="img-fluid my-3" />
           <div className="d-flex justify-content-center gap-3">
-            <button className="btn btn-secondary" onClick={resetScan}>Scan Again</button>
+            <button className="btn btn-secondary" onClick={resetScan}>
+              Scan Again
+            </button>
           </div>
         </div>
       )}
@@ -151,7 +129,12 @@ const Scan = ({ onResult }) => {
       {loading && <p>⏳ Uploading receipt to S3...</p>}
 
       {receiptUrl && (
-        <p className="mt-3 text-success">✅ Uploaded to S3: <a href={receiptUrl} target="_blank" rel="noreferrer">View Receipt</a></p>
+        <p className="mt-3 text-success">
+          ✅ Uploaded to S3:{' '}
+          <a href={receiptUrl} target="_blank" rel="noreferrer">
+            View Receipt
+          </a>
+        </p>
       )}
     </div>
   );
