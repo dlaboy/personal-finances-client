@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import CreateTransactionModal from '../components/CreateTransactionModal';
 import axios from 'axios';
 
+
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
   const [startDate, setStartDate] = useState(null);
@@ -60,36 +61,57 @@ const Transactions = () => {
   };
 
   return (
-    <div className="container-fluid vh-100 border border-dark p-4 d-flex flex-column vw-100">
-      <div className="d-flex justify-content-between align-items-center mb-3">
-        <Link to="/">Home</Link>
-        <h3>Transactions</h3>
-        <Button onClick={() => setShowModal(true)}>+ Add Transaction</Button>
-      </div>
+    <div className="container-fluid min-vh-100 min-vw-100 px-3 py-4 d-flex flex-column">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-center mb-4">
+        <div className="d-flex mb-2 mb-md-0 flex-row w-100 justify-content-between ">
+            <Link to="/" className="d-flex align-items-center gap-1 mb-1">
+            <i className="bi bi-house-door-fill fs-4"></i>
 
-      <Row className="my-3 justify-content-around align-items-end g-2">
-        <Col md="auto" className='text-center'>
+            </Link>
+            <h3 className="mb-0 ">Transactions</h3>
+            <div></div>
+        </div>
+        <div className="mt-3 mt-md-0 w-100">
+            <Button onClick={() => setShowModal(true)} className="w-100 w-md-auto">
+            + Add Transaction
+            </Button>
+        </div>
+        </div>
+
+
+      <Row className="my-3 gy-3 gx-2 d-flex flex-column flex-md-row">
+        <Col xs={12} md className="text-center">
           <Form.Label>Date Range</Form.Label>
-          <div className="d-flex gap-2">
-            <DatePicker selected={startDate} onChange={setStartDate} placeholderText="Start Date" className="form-control" />
-            <DatePicker selected={endDate} onChange={setEndDate} placeholderText="End Date" className="form-control" />
+          <div className="d-flex flex-column flex-sm-row gap-2">
+            <DatePicker
+              selected={startDate}
+              onChange={setStartDate}
+              placeholderText="Start Date"
+              className="form-control"
+            />
+            <DatePicker
+              selected={endDate}
+              onChange={setEndDate}
+              placeholderText="End Date"
+              className="form-control"
+            />
           </div>
         </Col>
-        <Col md="auto" className='text-center'>
+        <Col xs={12} md className="text-center">
           <Form.Label>Store</Form.Label>
           <Form.Select value={storeFilter} onChange={(e) => setstoreFilter(e.target.value)}>
             <option value="">All Stores</option>
             {stores.map(store => <option key={store} value={store}>{store}</option>)}
           </Form.Select>
         </Col>
-        <Col md="auto" className='text-center'>
+        <Col xs={12} md className="text-center">
           <Form.Label>Category</Form.Label>
           <Form.Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
             <option value="">All Categories</option>
             {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
           </Form.Select>
         </Col>
-        <Col md="auto" className='text-center'>
+        <Col xs={12} md className="text-center">
           <Form.Label>Amount</Form.Label>
           <Form.Select value={amountFilter} onChange={(e) => setAmountFilter(e.target.value)}>
             <option value="">All Amounts</option>
@@ -100,15 +122,15 @@ const Transactions = () => {
         </Col>
       </Row>
 
-      <div className="flex-grow-1 overflow-auto bg-light p-3 rounded" style={{ minHeight: '400px' }}>
-        <Table striped bordered hover responsive className="mb-0">
+      <div className="flex-grow-1 bg-light p-2 rounded overflow-x-auto" style={{ minHeight: '400px' }}>
+        <Table striped bordered hover responsive className="table-sm mb-0">
           <thead>
-            <tr className=''>
+            <tr>
               <th>Date</th>
               <th>Store</th>
               <th>Category</th>
               <th>Amount ($)</th>
-              <th>Receipt</th> {/* New column */}
+              <th>Receipt</th>
             </tr>
           </thead>
           <tbody>
@@ -119,7 +141,7 @@ const Transactions = () => {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric'
-                    })}</td>
+                  })}</td>
                   <td>{txn.store}</td>
                   <td>{txn.category}</td>
                   <td>{txn.amount.toFixed(2)}</td>
@@ -135,13 +157,13 @@ const Transactions = () => {
                 </tr>
               ))
             ) : (
-              <tr><td colSpan="5" className="text-center">No transactions found</td></tr>
+              <tr>
+                <td colSpan="5" className="text-center">No transactions found</td>
+              </tr>
             )}
           </tbody>
         </Table>
       </div>
-
-      {/* <div className="text-center mt-3">Page 1 of 300</div> */}
 
       <CreateTransactionModal
         show={showModal}
