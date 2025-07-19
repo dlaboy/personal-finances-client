@@ -61,23 +61,21 @@ const Transactions = () => {
   };
 
   return (
-    <div className="container-fluid min-vh-100 min-vw-100 px-3 py-4 d-flex flex-column">
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center align-items-md-center mb-4">
-        <div className="d-flex mb-2 mb-md-0 flex-row w-100 justify-content-between ">
-            <Link to="/" className="d-flex align-items-center gap-1 mb-1">
+    <div className="container min-vh-100 px-3 py-4 d-flex flex-column">
+      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+        <div className="d-flex mb-2 mb-md-0 flex-row w-100 justify-content-between">
+          <Link to="/" className="d-flex align-items-center gap-1 mb-1">
             <i className="bi bi-house-door-fill fs-4"></i>
-
-            </Link>
-            <h3 className="mb-0 ">Transactions</h3>
-            <div></div>
+          </Link>
+          <h3 className="mb-0">Transactions</h3>
+          <div></div>
         </div>
         <div className="mt-3 mt-md-0 w-100">
-            <Button onClick={() => setShowModal(true)} className="w-100 w-md-auto">
+          <Button onClick={() => setShowModal(true)} className="w-100 w-md-auto">
             + Add Transaction
-            </Button>
+          </Button>
         </div>
-        </div>
-
+      </div>
 
       <Row className="my-3 gy-3 gx-2 d-flex flex-column flex-md-row">
         <Col xs={12} md className="text-center">
@@ -122,7 +120,14 @@ const Transactions = () => {
         </Col>
       </Row>
 
-      <div className="flex-grow-1 bg-light p-2 rounded overflow-x-auto" style={{ minHeight: '400px' }}>
+      <div
+        className="bg-light p-2 rounded"
+        style={{
+          minHeight: '400px',
+          overflowX: 'auto',
+          WebkitOverflowScrolling: 'touch',
+        }}
+      >
         <Table striped bordered hover responsive className="table-sm mb-0">
           <thead>
             <tr>
@@ -175,6 +180,7 @@ const Transactions = () => {
       />
     </div>
   );
+
 };
 
 export default Transactions;
