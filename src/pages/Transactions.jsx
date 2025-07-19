@@ -60,126 +60,133 @@ const Transactions = () => {
     }
   };
 
-  return (
-    <div className="container min-vh-100 px-3 py-4 d-flex flex-column">
-      <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
-        <div className="d-flex mb-2 mb-md-0 flex-row w-100 justify-content-between">
-          <Link to="/" className="d-flex align-items-center gap-1 mb-1">
-            <i className="bi bi-house-door-fill fs-4"></i>
-          </Link>
-          <h3 className="mb-0">Transactions</h3>
-          <div></div>
-        </div>
-        <div className="mt-3 mt-md-0 w-100">
-          <Button onClick={() => setShowModal(true)} className="w-100 w-md-auto">
-            + Add Transaction
-          </Button>
-        </div>
+return (
+  <div
+    className="container px-3 py-4 d-flex flex-column"
+    style={{ overflowX: 'hidden' }}
+  >
+    <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
+      <div className="d-flex mb-2 mb-md-0 flex-row w-100 justify-content-between">
+        <Link to="/" className="d-flex align-items-center gap-1 mb-1">
+          <i className="bi bi-house-door-fill fs-4"></i>
+        </Link>
+        <h3 className="mb-0">Transactions</h3>
+        <div></div>
       </div>
+      <div className="mt-3 mt-md-0 w-100">
+        <Button onClick={() => setShowModal(true)} className="w-100 w-md-auto">
+          + Add Transaction
+        </Button>
+      </div>
+    </div>
 
-      <Row className="my-3 gy-3 gx-2 d-flex flex-column flex-md-row">
-        <Col xs={12} md className="text-center">
-          <Form.Label>Date Range</Form.Label>
-          <div className="d-flex flex-column flex-sm-row gap-2">
-            <DatePicker
-              selected={startDate}
-              onChange={setStartDate}
-              placeholderText="Start Date"
-              className="form-control"
-            />
-            <DatePicker
-              selected={endDate}
-              onChange={setEndDate}
-              placeholderText="End Date"
-              className="form-control"
-            />
-          </div>
-        </Col>
-        <Col xs={12} md className="text-center">
-          <Form.Label>Store</Form.Label>
-          <Form.Select value={storeFilter} onChange={(e) => setstoreFilter(e.target.value)}>
-            <option value="">All Stores</option>
-            {stores.map(store => <option key={store} value={store}>{store}</option>)}
-          </Form.Select>
-        </Col>
-        <Col xs={12} md className="text-center">
-          <Form.Label>Category</Form.Label>
-          <Form.Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
-            <option value="">All Categories</option>
-            {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-          </Form.Select>
-        </Col>
-        <Col xs={12} md className="text-center">
-          <Form.Label>Amount</Form.Label>
-          <Form.Select value={amountFilter} onChange={(e) => setAmountFilter(e.target.value)}>
-            <option value="">All Amounts</option>
-            <option value="0-50">$0 - $50</option>
-            <option value="100-500">$100 - $500</option>
-            <option value="500+">$500+</option>
-          </Form.Select>
-        </Col>
-      </Row>
+    <Row className="my-3 gy-3 gx-2 d-flex flex-column flex-md-row">
+      <Col xs={12} md className="text-center">
+        <Form.Label>Date Range</Form.Label>
+        <div className="d-flex flex-column flex-sm-row gap-2">
+          <DatePicker
+            selected={startDate}
+            onChange={setStartDate}
+            placeholderText="Start Date"
+            className="form-control"
+          />
+          <DatePicker
+            selected={endDate}
+            onChange={setEndDate}
+            placeholderText="End Date"
+            className="form-control"
+          />
+        </div>
+      </Col>
+      <Col xs={12} md className="text-center">
+        <Form.Label>Store</Form.Label>
+        <Form.Select value={storeFilter} onChange={(e) => setstoreFilter(e.target.value)}>
+          <option value="">All Stores</option>
+          {stores.map(store => <option key={store} value={store}>{store}</option>)}
+        </Form.Select>
+      </Col>
+      <Col xs={12} md className="text-center">
+        <Form.Label>Category</Form.Label>
+        <Form.Select value={categoryFilter} onChange={(e) => setCategoryFilter(e.target.value)}>
+          <option value="">All Categories</option>
+          {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+        </Form.Select>
+      </Col>
+      <Col xs={12} md className="text-center">
+        <Form.Label>Amount</Form.Label>
+        <Form.Select value={amountFilter} onChange={(e) => setAmountFilter(e.target.value)}>
+          <option value="">All Amounts</option>
+          <option value="0-50">$0 - $50</option>
+          <option value="100-500">$100 - $500</option>
+          <option value="500+">$500+</option>
+        </Form.Select>
+      </Col>
+    </Row>
 
-      <div
-        className="bg-light p-2 rounded"
-        style={{
-          minHeight: '400px',
-          overflowX: 'auto',
-          WebkitOverflowScrolling: 'touch',
-        }}
-      >
-        <Table striped bordered hover responsive className="table-sm mb-0">
-          <thead>
-            <tr>
-              <th>Date</th>
-              <th>Store</th>
-              <th>Category</th>
-              <th>Amount ($)</th>
-              <th>Receipt</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredTransactions.length > 0 ? (
-              filteredTransactions.map((txn, idx) => (
-                <tr key={idx}>
-                  <td>{new Date(txn.date).toLocaleDateString('en-US', {
+    <div
+      className="bg-light p-2 rounded"
+      style={{
+        minHeight: '400px',
+        overflowX: 'auto',
+        maxWidth: '100%',
+        WebkitOverflowScrolling: 'touch',
+      }}
+    >
+      <Table striped bordered hover responsive="sm" className="table-sm mb-0">
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Store</th>
+            <th>Category</th>
+            <th>Amount ($)</th>
+            <th>Receipt</th>
+          </tr>
+        </thead>
+        <tbody>
+          {filteredTransactions.length > 0 ? (
+            filteredTransactions.map((txn, idx) => (
+              <tr key={idx}>
+                <td style={{ wordBreak: 'break-word' }}>
+                  {new Date(txn.date).toLocaleDateString('en-US', {
                     year: 'numeric',
                     month: 'short',
                     day: 'numeric',
                     timeZone: 'UTC'
-                  })}</td>
-                  <td>{txn.store}</td>
-                  <td>{txn.category}</td>
-                  <td>{txn.amount.toFixed(2)}</td>
-                  <td>
-                    {txn.receipt ? (
-                      <a href={txn.receipt} target="_blank" rel="noopener noreferrer">
-                        View
-                      </a>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="text-center">No transactions found</td>
+                  })}
+                </td>
+                <td style={{ wordBreak: 'break-word' }}>{txn.store}</td>
+                <td style={{ wordBreak: 'break-word' }}>{txn.category}</td>
+                <td style={{ wordBreak: 'break-word' }}>{txn.amount.toFixed(2)}</td>
+                <td style={{ wordBreak: 'break-word' }}>
+                  {txn.receipt ? (
+                    <a href={txn.receipt} target="_blank" rel="noopener noreferrer">
+                      View
+                    </a>
+                  ) : (
+                    '—'
+                  )}
+                </td>
               </tr>
-            )}
-          </tbody>
-        </Table>
-      </div>
-
-      <CreateTransactionModal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        onSubmit={handleNewTransaction}
-        stores={stores}
-        categories={categories}
-      />
+            ))
+          ) : (
+            <tr>
+              <td colSpan="5" className="text-center">No transactions found</td>
+            </tr>
+          )}
+        </tbody>
+      </Table>
     </div>
-  );
+
+    <CreateTransactionModal
+      show={showModal}
+      onHide={() => setShowModal(false)}
+      onSubmit={handleNewTransaction}
+      stores={stores}
+      categories={categories}
+    />
+  </div>
+);
+
 
 };
 
