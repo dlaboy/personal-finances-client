@@ -73,8 +73,8 @@ return (
         <h3 className="mb-0">Transactions</h3>
         <div></div>
       </div>
-      <div className="mt-3 mt-md-0 w-100">
-        <Button onClick={() => setShowModal(true)} className="w-100 w-md-auto">
+      <div className="mt-3 mt-md-0">
+        <Button onClick={() => setShowModal(true)} className=" w-md-auto">
           + Add Transaction
         </Button>
       </div>
