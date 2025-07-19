@@ -1,54 +1,22 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState, useCallback } from 'react';
+import Webcam from 'react-webcam';
 import { S3Client } from '@aws-sdk/client-s3';
 import { Upload } from '@aws-sdk/lib-storage';
 
 const Scan = ({ onResult }) => {
-  const videoRef = useRef(null);
-  const canvasRef = useRef(null);
+  const webcamRef = useRef(null);
   const [imageDataUrl, setImageDataUrl] = useState(null);
   const [receiptUrl, setReceiptUrl] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    startCamera();
-    return () => stopCamera();
+  const capture = useCallback(() => {
+    const imageSrc = webcamRef.current.getScreenshot();
+    setImageDataUrl(imageSrc);
+    dataUrlToBlob(imageSrc).then(uploadToS3);
   }, []);
 
-  const startCamera = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        video: { facingMode: { ideal: 'environment' } }
-      });
-
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        videoRef.current.play();
-      }
-    } catch (err) {
-      console.error('Camera access error:', err);
-      alert('Unable to access the camera. Please ensure permission is granted.');
-    }
-  };
-
-  const stopCamera = () => {
-    if (videoRef.current?.srcObject) {
-      videoRef.current.srcObject.getTracks().forEach(track => track.stop());
-    }
-  };
-
-  const takePhoto = () => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-    const video = videoRef.current;
-
-    canvas.width = video.videoWidth;
-    canvas.height = video.videoHeight;
-    context.drawImage(video, 0, 0);
-    canvas.toBlob(uploadToS3, 'image/jpeg');
-
-    const dataUrl = canvas.toDataURL('image/jpeg');
-    setImageDataUrl(dataUrl);
-    stopCamera();
+  const dataUrlToBlob = (dataUrl) => {
+    return fetch(dataUrl).then(res => res.blob());
   };
 
   const uploadToS3 = async (blob) => {
@@ -82,13 +50,11 @@ const Scan = ({ onResult }) => {
       const url = `https://${bucket}.s3.${region}.amazonaws.com/${fileName}`;
       setReceiptUrl(url);
 
-      if (onResult) {
-        onResult({ receiptUrl: url });
-      }
+      if (onResult) onResult({ receiptUrl: url });
 
-      console.log('✅ Receipt uploaded to S3:', url);
+      console.log('✅ Uploaded to S3:', url);
     } catch (err) {
-      console.error('S3 Upload error:', err);
+      console.error('S3 Upload Error:', err);
     } finally {
       setLoading(false);
     }
@@ -97,7 +63,6 @@ const Scan = ({ onResult }) => {
   const resetScan = () => {
     setImageDataUrl(null);
     setReceiptUrl(null);
-    startCamera();
   };
 
   return (
@@ -106,14 +71,21 @@ const Scan = ({ onResult }) => {
 
       {!imageDataUrl && (
         <>
-          <video ref={videoRef} className="w-100" style={{ maxWidth: '500px' }} />
-          <button className="btn btn-primary mt-3" onClick={takePhoto}>
+          <Webcam
+            audio={false}
+            ref={webcamRef}
+            screenshotFormat="image/jpeg"
+            videoConstraints={{
+              facingMode: 'environment',
+            }}
+            className="w-100"
+            style={{ maxWidth: '500px' }}
+          />
+          <button className="btn btn-primary mt-3" onClick={capture}>
             Capture Receipt
           </button>
         </>
       )}
-
-      <canvas ref={canvasRef} style={{ display: 'none' }} />
 
       {imageDataUrl && (
         <div>
