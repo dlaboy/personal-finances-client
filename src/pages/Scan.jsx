@@ -67,42 +67,60 @@ const Scan = ({ onResult }) => {
 
   return (
     <div className="container py-4 text-center">
-      <h3>Scan Receipt</h3>
+      <h3 className="mb-3">Scan Receipt</h3>
 
       {!imageDataUrl && (
-        <>
-          <Webcam
-            audio={false}
-            ref={webcamRef}
-            screenshotFormat="image/jpeg"
-            videoConstraints={{
-              facingMode: 'environment',
+        <div className="d-flex flex-column align-items-center">
+          <div
+            className="camera-wrapper mb-3"
+            style={{
+              width: '100%',
+              maxWidth: '400px',
+              aspectRatio: '3/4',
+              borderRadius: '12px',
+              overflow: 'hidden',
+              backgroundColor: '#000',
+              position: 'relative',
             }}
-            className="w-100"
-            style={{ maxWidth: '500px' }}
-          />
-          <button className="btn btn-primary mt-3" onClick={capture}>
-            Capture Receipt
+          >
+            <Webcam
+              ref={webcamRef}
+              audio={false}
+              screenshotFormat="image/jpeg"
+              videoConstraints={{ facingMode: 'environment' }}
+              mirrored={false}
+              playsInline={true}
+              className="w-100 h-100 object-fit-cover"
+              style={{
+                objectFit: 'cover',
+                width: '100%',
+                height: '100%',
+                position: 'absolute',
+              }}
+            />
+          </div>
+          <button className="btn btn-primary" onClick={capture}>
+            📸 Capture Receipt
           </button>
-        </>
+        </div>
       )}
 
       {imageDataUrl && (
         <div>
-          <img src={imageDataUrl} alt="Receipt" className="img-fluid my-3" />
+          <img src={imageDataUrl} alt="Receipt" className="img-fluid my-3 rounded shadow" />
           <div className="d-flex justify-content-center gap-3">
             <button className="btn btn-secondary" onClick={resetScan}>
-              Scan Again
+              🔄 Scan Again
             </button>
           </div>
         </div>
       )}
 
-      {loading && <p>⏳ Uploading receipt to S3...</p>}
+      {loading && <p className="mt-3">⏳ Uploading receipt to S3...</p>}
 
       {receiptUrl && (
         <p className="mt-3 text-success">
-          ✅ Uploaded to S3:{' '}
+          ✅ Uploaded:{' '}
           <a href={receiptUrl} target="_blank" rel="noreferrer">
             View Receipt
           </a>
