@@ -76,7 +76,7 @@ const Scan = ({ onResult }) => {
             style={{
               width: '100%',
               maxWidth: '400px',
-              aspectRatio: '3/4',
+              aspectRatio: '3 / 4',
               borderRadius: '12px',
               overflow: 'hidden',
               backgroundColor: '#000',
@@ -87,15 +87,19 @@ const Scan = ({ onResult }) => {
               ref={webcamRef}
               audio={false}
               screenshotFormat="image/jpeg"
-              videoConstraints={{ facingMode: 'environment' }}
+              videoConstraints={{
+                facingMode: { ideal: 'environment' },
+                aspectRatio: 3 / 4,
+              }}
               mirrored={false}
               playsInline={true}
-              className="w-100 h-100 object-fit-cover"
               style={{
-                objectFit: 'cover',
                 width: '100%',
                 height: '100%',
+                objectFit: 'cover',
                 position: 'absolute',
+                top: 0,
+                left: 0,
               }}
             />
           </div>
