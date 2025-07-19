@@ -62,7 +62,7 @@ const Transactions = () => {
 
 return (
   <div
-    className="container px-3 py-4 d-flex flex-column"
+    className="container px-3 py-4 d-flex flex-column min-vw-100 max-vw-100"
     style={{ overflowX: 'hidden' }}
   >
     <div className="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4">
