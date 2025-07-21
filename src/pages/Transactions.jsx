@@ -32,10 +32,10 @@ const Transactions = () => {
   const categories = useMemo(() => [...new Set(transactions.map(t => t.category))], [transactions]);
 
   const filteredTransactions = transactions.filter(txn => {
-    const txnDate = new Date(txn.date);
+    const txnDate = new Date(txn.date).toISOString().split('T')[0];
     txnDate.setHours(0, 0, 0, 0);
     const start = startDate ? new Date(startDate).setHours(0, 0, 0, 0) : null;
-    const end = endDate ? new Date(endDate).setHours(0, 0, 0, 0) : null;
+    const end = endDate ? new Date(endDate).setHours(0, 0, 0, 0): null;
 
     const dateMatch = (!start || txnDate >= start) && (!end || txnDate <= end);
     const storeMatch = !storeFilter || txn.store === storeFilter;
