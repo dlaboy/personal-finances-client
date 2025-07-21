@@ -36,9 +36,9 @@ const Transactions = () => {
   const filteredTransactions = transactions.filter(txn => {
     const timeZone = 'America/Puerto_Rico';
 
-    const txnDate = DateTime.fromISO(txn.date, { zone: timeZone }).startOf('day');
-    const start = startDate ? DateTime.fromJSDate(startDate, { zone: timeZone }).startOf('day') : null;
-    const end = endDate ? DateTime.fromJSDate(endDate, { zone: timeZone }).startOf('day') : null;
+    const txnDate = DateTime.fromISO(txn.date, { zone: timeZone }).toISODate();
+    const start = startDate ? DateTime.fromJSDate(startDate, { zone: timeZone }).toISODate() : null;
+    const end = endDate ? DateTime.fromJSDate(endDate, { zone: timeZone }).toISODate() : null;
 
     const dateMatch = (!start || txnDate >= start) && (!end || txnDate <= end);
     const storeMatch = !storeFilter || txn.store === storeFilter;
