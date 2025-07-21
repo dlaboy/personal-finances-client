@@ -5,6 +5,8 @@ import 'react-datepicker/dist/react-datepicker.css';
 import { Link } from 'react-router-dom';
 import CreateTransactionModal from '../components/CreateTransactionModal';
 import axios from 'axios';
+import { DateTime } from 'luxon';
+
 
 
 const Transactions = () => {
@@ -32,10 +34,11 @@ const Transactions = () => {
   const categories = useMemo(() => [...new Set(transactions.map(t => t.category))], [transactions]);
 
   const filteredTransactions = transactions.filter(txn => {
-    const txnDate = new Date(txn.date).toISOString().split('T')[0];
-    txnDate.setHours(0, 0, 0, 0);
-    const start = startDate ? new Date(startDate).setHours(0, 0, 0, 0) : null;
-    const end = endDate ? new Date(endDate).setHours(0, 0, 0, 0): null;
+    const timeZone = 'America/Puerto_Rico';
+
+    const txnDate = DateTime.fromISO(txn.date, { zone: timeZone }).startOf('day');
+    const start = startDate ? DateTime.fromJSDate(startDate, { zone: timeZone }).startOf('day') : null;
+    const end = endDate ? DateTime.fromJSDate(endDate, { zone: timeZone }).startOf('day') : null;
 
     const dateMatch = (!start || txnDate >= start) && (!end || txnDate <= end);
     const storeMatch = !storeFilter || txn.store === storeFilter;
