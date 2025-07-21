@@ -16,24 +16,38 @@ const CreateTransactionModal = ({ show, onHide, onSubmit, stores, categories }) 
   const [customstore, setCustomstore] = useState('');
   const [customCategory, setCustomCategory] = useState('');
 
-    const handleScanResult = (data) => {
-        console.log('Scan result:', data);
-        setNewTxn({
-            ...newTxn,
-            receipt: data.receiptUrl || null
-        });
-    };
-
+  const handleScanResult = (data) => {
+    console.log('Scan result:', data);
+    setNewTxn({
+      ...newTxn,
+      receipt: data.receiptUrl || null
+    });
+  };
 
   const handleSave = () => {
-   const finalTxn = {
-    ...newTxn,
-    store: newTxn.store === 'Other' ? customstore : newTxn.store,
-    category: newTxn.category === 'Other' ? customCategory : newTxn.category,
-    receipt: newTxn.receipt || null
+    const parsedAmount = parseFloat(newTxn.amount);
+    const finalTxn = {
+      ...newTxn,
+      store: newTxn.store === 'Other' ? customstore.trim() : newTxn.store.trim(),
+      category: newTxn.category === 'Other' ? customCategory.trim() : newTxn.category.trim(),
+      amount: isNaN(parsedAmount) ? 0 : parsedAmount,
+      receipt: newTxn.receipt || null
     };
+    console.log('Raw store:', newTxn.store);
+    console.log('Custom store:', customstore);
+    console.log('Final store:', finalTxn.store);
+    console.log('Raw category:', newTxn.category);
+    console.log('Custom category:', customCategory);
+    console.log('Final category:', finalTxn.category);
+    console.log('Amount:', finalTxn.amount);
 
+    // Basic validation
+    if (!finalTxn.store || !finalTxn.category || finalTxn.amount <= 0) {
+      alert('Please fill out Store, Category, and a valid Amount before saving.');
+      return;
+    }
 
+    console.log('Saving transaction:', finalTxn);
     onSubmit(finalTxn);
     onHide();
   };
@@ -110,7 +124,7 @@ const CreateTransactionModal = ({ show, onHide, onSubmit, stores, categories }) 
 
           <Form.Group className="mb-3">
             <Form.Label>Scan Receipt</Form.Label>
-            <Scan onResult={ handleScanResult } />
+            <Scan onResult={handleScanResult} />
           </Form.Group>
         </Form>
       </Modal.Body>
