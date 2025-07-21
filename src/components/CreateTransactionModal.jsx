@@ -59,6 +59,10 @@ const CreateTransactionModal = ({ show, onHide, onSubmit, stores, categories }) 
       </Modal.Header>
       <Modal.Body>
         <Form>
+          <Form.Group className="mb-3">
+            {/* <Form.Label>Scan Receipt</Form.Label> */}
+            <Scan onResult={handleScanResult} />
+          </Form.Group>
           <Form.Group className="mb-2">
             <Form.Label>Date</Form.Label>
             <DatePicker
@@ -122,10 +126,7 @@ const CreateTransactionModal = ({ show, onHide, onSubmit, stores, categories }) 
             />
           </Form.Group>
 
-          <Form.Group className="mb-3">
-            <Form.Label>Scan Receipt</Form.Label>
-            <Scan onResult={handleScanResult} />
-          </Form.Group>
+          
         </Form>
       </Modal.Body>
       <Modal.Footer>
